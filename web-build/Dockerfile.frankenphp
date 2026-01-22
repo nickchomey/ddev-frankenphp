@@ -20,6 +20,11 @@ cp /etc/php/${DDEV_PHP_VERSION}/mods-available/blackfire.ini /etc/php-zts/conf.d
 cp /etc/php/${DDEV_PHP_VERSION}/mods-available/xdebug.ini /etc/php-zts/conf.d/15-xdebug.ini
 cp /etc/php/${DDEV_PHP_VERSION}/mods-available/xhprof.ini /etc/php-zts/conf.d/20-xhprof.ini
 
+# Fix extension .so paths for php-zts (they use versioned names like xdebug-zts-84)
+PHP_ZTS_VERSION=$(echo $DDEV_PHP_VERSION | tr -d '.')
+sed -i "s|zend_extension=xdebug.so|zend_extension=xdebug-zts-${PHP_ZTS_VERSION}|" /etc/php-zts/conf.d/15-xdebug.ini
+sed -i "s|extension=xhprof.so|extension=xhprof-zts-${PHP_ZTS_VERSION}|" /etc/php-zts/conf.d/20-xhprof.ini
+
 # Create symlinks for phpenmod and phpdismod to use php-zts versions
 ln -sf /usr/sbin/phpenmod-zts /usr/sbin/phpenmod
 ln -sf /usr/sbin/phpdismod-zts /usr/sbin/phpdismod
